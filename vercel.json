@@ -1,9 +1,4 @@
 {
-  "functions": {
-    "api/feedback.js": {
-      "runtime": "edge"
-    }
-  },
   "rewrites": [
     { "source": "/(.*)", "destination": "/public/index.html" }
   ]

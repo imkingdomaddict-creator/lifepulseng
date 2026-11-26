@@ -18,7 +18,7 @@ export default async function handler(req) {
     });
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
     return new Response(JSON.stringify({ error: 'API key not configured' }), {
       status: 500,
@@ -36,15 +36,14 @@ export default async function handler(req) {
     });
   }
 
-  const upstream = await fetch('https://api.anthropic.com/v1/messages', {
+  const upstream = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
+      'Authorization': `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
+      model: 'llama-3.3-70b-versatile',
       max_tokens: 1200,
       stream: true,
       messages: body.messages,

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LifePulse NG — Admin Dashboard</title>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root {
+    --orange: #f97316; --purple: #7c3aed;
+    --grad: linear-gradient(135deg, #f97316, #7c3aed);
+    --text: #1a1a1a; --text-muted: #666;
+    --border: #e5e5e5; --surface: #fff; --bg: #fafafa;
+    --danger: #dc2626; --success: #16a34a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* LOGIN */
+  #login { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 1.5rem; }
+  .login-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; width: 100%; max-width: 380px; }
+  .login-logo { font-size: 1.1rem; font-weight: 800; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.25rem; }
+  .login-sub { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.75rem; }
+  .login-label { font-size: 0.82rem; font-weight: 600; margin-bottom: 6px; display: block; }
+  .login-input { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 0.93rem; margin-bottom: 1rem; }
+  .login-input:focus { outline: none; border-color: var(--purple); }
+  .login-btn { width: 100%; background: var(--grad); color: #fff; border: none; padding: 13px; border-radius: 999px; font-size: 0.95rem; font-weight: 700; cursor: pointer; }
+  .login-error { font-size: 0.8rem; color: var(--danger); margin-bottom: 0.75rem; display: none; }
+  .login-error.show { display: block; }
+
+  /* DASHBOARD */
+  #dashboard { display: none; }
+  .topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+  .topbar-logo { font-size: 1rem; font-weight: 800; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+  .export-btn { display: flex; align-items: center; gap: 6px; background: none; border: 1.5px solid var(--purple); color: var(--purple); padding: 7px 16px; border-radius: 999px; font-size: 0.82rem; font-weight: 600; cursor: pointer; }
+  .logout-btn { display: flex; align-items: center; gap: 6px; background: none; border: 1.5px solid var(--border); color: var(--text-muted); padding: 7px 16px; border-radius: 999px; font-size: 0.82rem; cursor: pointer; }
+
+  main { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .page-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 0.25rem; }
+  .page-sub { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 2rem; }
+
+  /* STAT CARDS */
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 2rem; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; }
+  .stat-label { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+  .stat-label svg { width: 13px; height: 13px; stroke-width: 2; fill: none; }
+  .stat-value { font-size: 2rem; font-weight: 800; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .stat-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 3px; }
+
+  /* DOMAIN SCORES */
+  .section-title { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
+  .section-title svg { width: 16px; height: 16px; stroke: var(--purple); stroke-width: 2; fill: none; }
+  .domain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; margin-bottom: 2rem; }
+  .domain-row { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+  .domain-row-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .domain-name { font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 7px; }
+  .domain-name svg { width: 14px; height: 14px; stroke-width: 2; fill: none; }
+  .domain-score { font-size: 1rem; font-weight: 800; }
+  .bar-track { height: 8px; background: var(--border); border-radius: 999px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 999px; transition: width 0.8s ease; }
+  .score-tag { font-size: 0.7rem; margin-top: 5px; font-weight: 600; }
+
+  /* MONTHLY TABLE */
+  .monthly-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 2rem; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th { text-align: left; font-weight: 600; color: var(--text-muted); padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  tr:last-child td { border-bottom: none; }
+  .month-bar { height: 6px; background: var(--grad); border-radius: 999px; min-width: 4px; display: inline-block; vertical-align: middle; margin-left: 8px; }
+
+  /* LOADING */
+  .loading { text-align: center; padding: 3rem; color: var(--text-muted); font-size: 0.9rem; }
+  .dots { display: inline-flex; gap: 5px; margin-right: 8px; }
+  .dots span { width: 7px; height: 7px; border-radius: 50%; background: var(--orange); animation: dp 1.2s infinite; display: inline-block; }
+  .dots span:nth-child(2) { animation-delay: 0.2s; }
+  .dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dp { 0%,80%,100% { opacity: 0.2; } 40% { opacity: 1; } }
+
+  .empty { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.88rem; }
+  .footer { text-align: center; padding: 1.5rem; font-size: 0.75rem; color: var(--text-muted); border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="login-card">
+    <div class="login-logo">LifePulse NG</div>
+    <div class="login-sub">Admin Dashboard — Authorised access only</div>
+    <label class="login-label">Password</label>
+    <input type="password" class="login-input" id="pwd-input" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doLogin()">
+    <div class="login-error" id="login-error">Incorrect password. Try again.</div>
+    <button class="login-btn" onclick="doLogin()">Sign in</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <div class="topbar">
+    <div class="topbar-logo">LifePulse NG — Admin</div>
+    <div class="topbar-right">
+      <button class="export-btn" onclick="exportCSV()">
+        <i data-lucide="download" style="width:14px;height:14px;stroke:var(--purple);stroke-width:2;fill:none"></i>
+        Export CSV
+      </button>
+      <button class="logout-btn" onclick="logout()">
+        <i data-lucide="log-out" style="width:14px;height:14px;stroke:var(--text-muted);stroke-width:2;fill:none"></i>
+        Logout
+      </button>
+    </div>
+  </div>
+
+  <main>
+    <div class="page-title">Impact Dashboard</div>
+    <div class="page-sub" id="last-updated">Loading data…</div>
+
+    <div id="dashboard-content">
+      <div class="loading"><span class="dots"><span></span><span></span><span></span></span> Fetching data…</div>
+    </div>
+  </main>
+  <div class="footer">&copy; 2025 LifePulse NG. Admin access only.</div>
+</div>
+
+<script>
+let adminToken = '';
+let statsData = null;
+
+const DOMAIN_META = {
+  mental:     { label: 'Mental',     lucide: 'brain',    grad: 'linear-gradient(135deg,#6366f1,#8b5cf6)' },
+  financial:  { label: 'Financial',  lucide: 'wallet',   grad: 'linear-gradient(135deg,#f97316,#ef4444)' },
+  spiritual:  { label: 'Spiritual',  lucide: 'sparkles', grad: 'linear-gradient(135deg,#f59e0b,#f97316)' },
+  relational: { label: 'Relational', lucide: 'heart',    grad: 'linear-gradient(135deg,#ec4899,#f43f5e)' },
+  social:     { label: 'Social',     lucide: 'users',    grad: 'linear-gradient(135deg,#3b82f6,#6366f1)' },
+  physical:   { label: 'Physical',   lucide: 'activity', grad: 'linear-gradient(135deg,#10b981,#3b82f6)' },
+};
+
+function doLogin() {
+  const pwd = document.getElementById('pwd-input').value.trim();
+  if (!pwd) return;
+  adminToken = pwd;
+  document.getElementById('login-error').classList.remove('show');
+  loadStats();
+}
+
+function logout() {
+  adminToken = '';
+  statsData = null;
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('login').style.display = 'flex';
+  document.getElementById('pwd-input').value = '';
+}
+
+async function loadStats() {
+  try {
+    const res = await fetch('/api/stats', {
+      headers: { 'Authorization': `Bearer ${adminToken}` }
+    });
+    if (res.status === 401) {
+      document.getElementById('login-error').classList.add('show');
+      return;
+    }
+    if (!res.ok) throw new Error('Server error');
+    statsData = await res.json();
+
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    document.getElementById('last-updated').textContent = 'Last refreshed: ' + new Date().toLocaleString('en-NG');
+    renderDashboard(statsData);
+    lucide.createIcons();
+  } catch (err) {
+    document.getElementById('login-error').textContent = 'Could not connect. Check your setup.';
+    document.getElementById('login-error').classList.add('show');
+  }
+}
+
+function getScoreColor(s) { return s >= 75 ? '#16a34a' : s >= 50 ? '#f97316' : '#dc2626'; }
+function getScoreLabel(s) { return s >= 75 ? 'Strong' : s >= 50 ? 'Moderate' : 'Needs attention'; }
+
+function renderDashboard(data) {
+  const { total, averages, monthly } = data;
+  const domainList = Object.keys(DOMAIN_META);
+  const overallAvg = domainList.length ? Math.round(domainList.reduce((s, d) => s + (averages[d] || 0), 0) / domainList.length) : 0;
+  const weakest = domainList.sort((a, b) => (averages[a] || 0) - (averages[b] || 0))[0];
+  const strongest = [...domainList].sort((a, b) => (averages[b] || 0) - (averages[a] || 0))[0];
+
+  const monthEntries = Object.entries(monthly).sort((a, b) => a[0].localeCompare(b[0]));
+  const maxMonth = Math.max(...monthEntries.map(e => e[1]), 1);
+
+  document.getElementById('dashboard-content').innerHTML = `
+    <!-- STAT CARDS -->
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-label"><i data-lucide="users"></i> Total Assessments</div>
+        <div class="stat-value">${total.toLocaleString()}</div>
+        <div class="stat-sub">All time</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label"><i data-lucide="bar-chart-2"></i> Overall Average</div>
+        <div class="stat-value">${overallAvg}</div>
+        <div class="stat-sub">Out of 100</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label"><i data-lucide="trending-down"></i> Weakest Area</div>
+        <div class="stat-value" style="font-size:1.3rem">${DOMAIN_META[weakest]?.label || '—'}</div>
+        <div class="stat-sub">${averages[weakest] || 0}/100 avg</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label"><i data-lucide="trending-up"></i> Strongest Area</div>
+        <div class="stat-value" style="font-size:1.3rem">${DOMAIN_META[strongest]?.label || '—'}</div>
+        <div class="stat-sub">${averages[strongest] || 0}/100 avg</div>
+      </div>
+    </div>
+
+    <!-- DOMAIN AVERAGES -->
+    <div class="section-title"><i data-lucide="activity"></i> Average Scores by Domain</div>
+    ${total === 0 ? `<div class="empty">No assessments completed yet. Share LifePulse NG to get started.</div>` : `
+    <div class="domain-grid">
+      ${Object.entries(DOMAIN_META).map(([id, meta]) => {
+        const sc = averages[id] || 0;
+        const col = getScoreColor(sc);
+        return `
+        <div class="domain-row">
+          <div class="domain-row-top">
+            <div class="domain-name"><i data-lucide="${meta.lucide}" style="stroke:${col}"></i> ${meta.label}</div>
+            <div class="domain-score" style="color:${col}">${sc}/100</div>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="width:${sc}%;background:${col}"></div></div>
+          <div class="score-tag" style="color:${col}">${getScoreLabel(sc)}</div>
+        </div>`;
+      }).join('')}
+    </div>`}
+
+    <!-- MONTHLY BREAKDOWN -->
+    <div class="section-title"><i data-lucide="calendar"></i> Monthly Breakdown</div>
+    <div class="monthly-card">
+      ${monthEntries.length === 0 ? `<div class="empty">No monthly data yet.</div>` : `
+      <table>
+        <thead><tr><th>Month</th><th>Assessments</th><th>Visual</th></tr></thead>
+        <tbody>
+          ${monthEntries.map(([month, count]) => `
+          <tr>
+            <td>${formatMonth(month)}</td>
+            <td><strong>${count}</strong></td>
+            <td><span class="month-bar" style="width:${Math.round((count/maxMonth)*120)}px"></span></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`}
+    </div>
+  `;
+
+  lucide.createIcons();
+}
+
+function formatMonth(key) {
+  const [year, month] = key.split('-');
+  return new Date(year, parseInt(month) - 1).toLocaleString('en-NG', { month: 'long', year: 'numeric' });
+}
+
+function exportCSV() {
+  if (!statsData) return;
+  const { total, averages, monthly } = statsData;
+  const rows = [
+    ['LifePulse NG — Impact Report'],
+    ['Generated', new Date().toLocaleString('en-NG')],
+    [],
+    ['Total Assessments', total],
+    [],
+    ['Domain', 'Average Score (/100)', 'Status'],
+    ...Object.entries(DOMAIN_META).map(([id, meta]) => [
+      meta.label, averages[id] || 0, getScoreLabel(averages[id] || 0)
+    ]),
+    [],
+    ['Month', 'Assessments'],
+    ...Object.entries(monthly).sort().map(([m, c]) => [formatMonth(m), c])
+  ];
+
+  const csv = rows.map(r => r.join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `lifepulse-report-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click(); URL.revokeObjectURL(url);
+}
+
+document.addEventListener('DOMContentLoaded', () => lucide.createIcons());
+</script>
+</body>
+</html>

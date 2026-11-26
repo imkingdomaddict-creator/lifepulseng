@@ -10,51 +10,50 @@ export default async function handler(req) {
   if (req.method === 'OPTIONS') return new Response(null, { headers: cors });
   if (req.method !== 'POST') return new Response('Method not allowed', { status: 405 });
 
-  const kv_url = process.env.KV_REST_API_URL;
-  const kv_token = process.env.KV_REST_API_TOKEN;
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_ANON_KEY;
 
-  if (!kv_url || !kv_token) {
-    return new Response(JSON.stringify({ error: 'KV not configured' }), { status: 500, headers: { 'Content-Type': 'application/json', ...cors } });
+  if (!supabaseUrl || !supabaseKey) {
+    return new Response(JSON.stringify({ error: 'Supabase not configured' }), {
+      status: 500, headers: { 'Content-Type': 'application/json', ...cors }
+    });
   }
 
   let body;
-  try { body = await req.json(); } catch { return new Response('Invalid JSON', { status: 400 }); }
+  try { body = await req.json(); } catch {
+    return new Response('Invalid JSON', { status: 400 });
+  }
 
-  const { scores, timestamp } = body;
+  const { scores } = body;
   if (!scores) return new Response('Missing scores', { status: 400 });
 
-  const date = new Date(timestamp || Date.now());
-  const monthKey = `month:${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-  const totalKey = 'total:assessments';
+  const record = {
+    mental:     scores.mental     ?? null,
+    financial:  scores.financial  ?? null,
+    spiritual:  scores.spiritual  ?? null,
+    relational: scores.relational ?? null,
+    social:     scores.social     ?? null,
+    physical:   scores.physical   ?? null,
+    overall:    scores.overall    ?? null,
+  };
 
-  // Helper: call KV REST API
-  async function kv(cmd) {
-    const res = await fetch(`${kv_url}/${cmd.map(encodeURIComponent).join('/')}`, {
-      headers: { Authorization: `Bearer ${kv_token}` }
+  const res = await fetch(`${supabaseUrl}/rest/v1/assessments`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': supabaseKey,
+      'Authorization': `Bearer ${supabaseKey}`,
+      'Prefer': 'return=minimal',
+    },
+    body: JSON.stringify(record),
+  });
+
+  if (!res.ok) {
+    const err = await res.text();
+    return new Response(JSON.stringify({ error: 'Supabase error', detail: err }), {
+      status: res.status, headers: { 'Content-Type': 'application/json', ...cors }
     });
-    const json = await res.json();
-    return json.result;
   }
-
-  // Increment total count
-  await kv(['INCR', totalKey]);
-
-  // Increment monthly count
-  await kv(['INCR', monthKey]);
-
-  // Store domain scores as running sum + count for averages
-  const domains = ['mental', 'financial', 'spiritual', 'relational', 'social', 'physical'];
-  for (const d of domains) {
-    if (scores[d] !== undefined) {
-      await kv(['INCRBYFLOAT', `avg:${d}:sum`, scores[d]]);
-      await kv(['INCR', `avg:${d}:count`]);
-    }
-  }
-
-  // Store last 30 individual entries for trend (circular buffer via list)
-  const entry = JSON.stringify({ scores, ts: date.toISOString() });
-  await kv(['LPUSH', 'recent:entries', entry]);
-  await kv(['LTRIM', 'recent:entries', '0', '99']); // keep last 100
 
   return new Response(JSON.stringify({ ok: true }), {
     headers: { 'Content-Type': 'application/json', ...cors }

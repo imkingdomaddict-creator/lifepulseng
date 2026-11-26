@@ -566,6 +566,14 @@ async function showResults() {
   const scores = {};
   DOMAINS.forEach(d => { scores[d.id] = scoreDomain(d.id); });
 
+  // Save anonymous scores to Supabase (silent — never blocks the user)
+  const overall = Math.round(DOMAINS.reduce((s, d) => s + scores[d.id], 0) / DOMAINS.length);
+  fetch('/api/save', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ scores: { ...scores, overall } })
+  }).catch(() => {});
+
   showScreen('results-screen');
 
   const overall = Math.round(DOMAINS.reduce((s, d) => s + scores[d.id], 0) / DOMAINS.length);

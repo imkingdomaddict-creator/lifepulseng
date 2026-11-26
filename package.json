@@ -2,8 +2,5 @@
   "name": "lifepulse-ng",
   "version": "1.0.0",
   "description": "LifePulse NG — Know your mental health. Know your next step.",
-  "private": true,
-  "engines": {
-    "node": "18.x"
-  }
+  "private": true
 }

@@ -4,45 +4,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>LifePulse NG — Know your mental health. Know your next step.</title>
-<script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
 <style>
   :root {
-    --orange: #f97316;
-    --orange-dark: #ea6c0a;
-    --orange-light: #fff4ed;
-    --purple: #7c3aed;
-    --purple-dark: #6d28d9;
-    --purple-light: #f3f0ff;
+    --orange: #f97316; --orange-dark: #ea6c0a; --orange-light: #fff4ed;
+    --purple: #7c3aed; --purple-dark: #6d28d9; --purple-light: #f3f0ff;
     --grad: linear-gradient(135deg, #f97316, #7c3aed);
-    --text: #1a1a1a;
-    --text-muted: #666;
-    --border: #e5e5e5;
-    --surface: #fff;
-    --bg: #fafafa;
-    --danger: #dc2626;
-    --success: #16a34a;
-    --radius: 14px;
+    --text: #1a1a1a; --text-muted: #666; --border: #e5e5e5;
+    --surface: #fff; --bg: #fafafa; --danger: #dc2626; --radius: 14px;
   }
   @media (prefers-color-scheme: dark) {
-    :root {
-      --text: #f0f0f0;
-      --text-muted: #999;
-      --border: #2a2a2a;
-      --surface: #1a1a1a;
-      --bg: #111;
-      --orange-light: #2a1500;
-      --purple-light: #1a0a2e;
-    }
+    :root { --text:#f0f0f0; --text-muted:#999; --border:#2a2a2a; --surface:#1a1a1a; --bg:#111; --orange-light:#2a1500; --purple-light:#1a0a2e; }
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-
   .screen { display: none; min-height: 100vh; }
   .screen.active { display: flex; flex-direction: column; }
 
   /* INTRO */
   .intro-hero { background: var(--grad); padding: 3.5rem 1.5rem 2.5rem; text-align: center; }
   .intro-logo { font-size: 1rem; font-weight: 700; color: rgba(255,255,255,0.85); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .intro-logo svg { width: 20px; height: 20px; stroke: #fff; stroke-width: 2.5; fill: none; }
   .intro-title { font-size: 2.1rem; font-weight: 800; color: #fff; line-height: 1.2; margin-bottom: 0.6rem; }
   .intro-title span { opacity: 0.85; }
   .intro-tagline { font-size: 1rem; color: rgba(255,255,255,0.88); line-height: 1.6; max-width: 340px; margin: 0 auto; }
@@ -52,27 +33,19 @@
   .chip-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .chip-icon svg { width: 18px; height: 18px; stroke: #fff; stroke-width: 2; fill: none; }
   .chip-sub { font-size: 0.72rem; color: var(--text-muted); font-weight: 400; margin-top: 1px; }
-
   .notice { background: #F8F7FF; border: 1px solid #E5E0FF; border-radius: 10px; padding: 12px 14px; font-size: 0.8rem; color: #55556B; line-height: 1.6; margin-bottom: 1.75rem; display: flex; gap: 10px; align-items: flex-start; }
   .notice svg { flex-shrink: 0; margin-top: 1px; stroke: var(--purple); width: 16px; height: 16px; stroke-width: 2; fill: none; }
   .notice strong { color: var(--purple); }
-  @media (prefers-color-scheme: dark) {
-    .notice { background: #1a1530; border-color: #3d2d6e; color: #a090cc; }
-    .notice strong { color: #a78bfa; }
-    .notice svg { stroke: #a78bfa; }
-  }
-
+  @media (prefers-color-scheme: dark) { .notice { background:#1a1530; border-color:#3d2d6e; color:#a090cc; } .notice strong { color:#a78bfa; } .notice svg { stroke:#a78bfa; } }
   .age-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--purple-light); color: var(--purple); border-radius: 999px; padding: 5px 14px; font-size: 0.8rem; font-weight: 600; margin-bottom: 1.5rem; }
   .age-badge svg { width: 14px; height: 14px; stroke: var(--purple); stroke-width: 2; fill: none; }
-
   .btn-primary { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: var(--grad); color: #fff; border: none; padding: 16px; border-radius: 999px; font-size: 1rem; font-weight: 700; cursor: pointer; }
   .btn-primary svg { width: 18px; height: 18px; stroke: #fff; stroke-width: 2.5; fill: none; }
   .btn-primary:active { opacity: 0.9; transform: scale(0.98); }
 
   /* TOPBAR */
   .topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.9rem 1.25rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 20; }
-  .topbar-logo { font-size: 1rem; font-weight: 800; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: flex; align-items: center; gap: 6px; }
-  .topbar-logo-icon { width: 22px; height: 22px; }
+  .topbar-logo { font-size: 1rem; font-weight: 800; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
   .topbar-step { font-size: 0.78rem; color: var(--text-muted); }
 
   /* PROGRESS */
@@ -88,32 +61,26 @@
   .q-number { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem; }
   .q-text { font-size: 1.1rem; font-weight: 600; line-height: 1.55; margin-bottom: 0.5rem; }
   .q-hint { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.5; }
-
   .options-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.5rem; }
   .option-btn { background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; padding: 14px 16px; font-size: 0.93rem; text-align: left; cursor: pointer; transition: all 0.15s; color: var(--text); display: flex; align-items: center; gap: 12px; width: 100%; }
   .opt-dot { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0; transition: all 0.15s; }
   .option-btn.selected { border-color: var(--orange); background: var(--orange-light); }
   .option-btn.selected .opt-dot { background: var(--orange); border-color: var(--orange); }
   .option-btn:active { transform: scale(0.98); }
-
   .styled-select { width: 100%; padding: 13px 14px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 0.93rem; background: var(--surface); color: var(--text); appearance: none; cursor: pointer; margin-bottom: 1.5rem; }
   .styled-select:focus { outline: none; border-color: var(--orange); }
-
   .error-msg { font-size: 0.8rem; color: var(--danger); margin-bottom: 1rem; display: none; align-items: center; gap: 6px; }
-  .error-msg svg { width: 14px; height: 14px; stroke: var(--danger); stroke-width: 2; fill: none; flex-shrink: 0; }
   .error-msg.show { display: flex; }
-
   .btn-next { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: var(--grad); color: #fff; border: none; padding: 15px; border-radius: 999px; font-size: 1rem; font-weight: 700; cursor: pointer; }
   .btn-next svg { width: 18px; height: 18px; stroke: #fff; stroke-width: 2.5; fill: none; }
   .btn-next:disabled { background: #ccc; cursor: not-allowed; }
   .btn-next:active:not(:disabled) { opacity: 0.9; transform: scale(0.98); }
 
-  /* CATEGORY SUCCESS */
+  /* SUCCESS */
   .success-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem 1.5rem; text-align: center; }
   .success-ring { width: 90px; height: 90px; border-radius: 50%; background: var(--grad); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; }
   .success-ring svg { width: 40px; height: 40px; stroke: #fff; stroke-width: 2; fill: none; }
-  .success-label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--orange); margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 6px; }
-  .success-label svg { width: 14px; height: 14px; stroke: var(--orange); stroke-width: 2; fill: none; }
+  .success-label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--orange); margin-bottom: 0.5rem; }
   .success-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; }
   .success-sub { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; max-width: 300px; margin: 0 auto 1.75rem; }
   .next-category-preview { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; gap: 12px; margin-bottom: 2rem; width: 100%; max-width: 340px; }
@@ -128,11 +95,9 @@
 
   /* RESULTS */
   .results-hero { background: var(--grad); padding: 2rem 1.5rem; text-align: center; color: #fff; }
-  .results-hero h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.4rem; display: flex; align-items: center; justify-content: center; gap: 10px; }
-  .results-hero h2 svg { width: 24px; height: 24px; stroke: #fff; stroke-width: 2; fill: none; }
+  .results-hero h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 0.4rem; }
   .results-hero p { font-size: 0.88rem; opacity: 0.88; }
   .results-body { padding: 1.5rem 1.25rem 3rem; max-width: 600px; margin: 0 auto; width: 100%; }
-
   .scores-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.5rem; }
   @media (max-width: 400px) { .scores-grid { grid-template-columns: 1fr; } }
   .score-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
@@ -141,31 +106,51 @@
   .score-card-num { font-size: 1.3rem; font-weight: 800; margin-bottom: 6px; }
   .score-track { height: 6px; background: var(--border); border-radius: 999px; overflow: hidden; }
   .score-fill { height: 100%; border-radius: 999px; transition: width 0.8s ease; }
-
   .ai-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.5rem; }
   .ai-card-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
   .ai-card-title svg { width: 18px; height: 18px; stroke: var(--purple); stroke-width: 2; fill: none; }
   .ai-body { font-size: 0.92rem; line-height: 1.8; white-space: pre-wrap; color: var(--text); }
   .ai-loading { display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-size: 0.88rem; }
   .dots { display: flex; gap: 5px; }
-  .dots span { width: 7px; height: 7px; border-radius: 50%; background: var(--orange); animation: dp 1.2s infinite; }
+  .dots span { width: 7px; height: 7px; border-radius: 50%; background: var(--orange); animation: dp 1.2s infinite; display: inline-block; }
   .dots span:nth-child(2) { animation-delay: 0.2s; }
   .dots span:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes dp { 0%,80%,100% { opacity: 0.2; } 40% { opacity: 1; } }
-
+  @keyframes dp { 0%,80%,100%{opacity:.2} 40%{opacity:1} }
   .retake-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: none; border: 2px solid var(--orange); color: var(--orange); padding: 14px; border-radius: 999px; font-size: 0.95rem; font-weight: 700; cursor: pointer; }
   .retake-btn svg { width: 16px; height: 16px; stroke: var(--orange); stroke-width: 2.5; fill: none; }
-
   .footer { text-align: center; padding: 1.5rem; font-size: 0.75rem; color: var(--text-muted); border-top: 1px solid var(--border); margin-top: auto; }
 </style>
 </head>
 <body>
 
+<!-- SVG ICON DEFINITIONS - inline, no library needed -->
+<svg style="display:none">
+  <symbol id="ico-activity" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></symbol>
+  <symbol id="ico-brain" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-1.07-4.73A3 3 0 0 1 4.46 10 2.5 2.5 0 0 1 7 7.5a2.5 2.5 0 0 1 2.5-5.5z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 1.07-4.73A3 3 0 0 0 19.54 10 2.5 2.5 0 0 0 17 7.5a2.5 2.5 0 0 0-2.5-5.5z"/></symbol>
+  <symbol id="ico-wallet" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><path d="M18 12a2 2 0 0 0-2 2c0 1.1.9 2 2 2h4v-4z"/></symbol>
+  <symbol id="ico-sparkles" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.88 5.76L20 10l-6.12 1.24L12 17l-1.88-5.76L4 10l6.12-1.24z"/><path d="M5 3l.88 2.12L8 6l-2.12.88L5 9l-.88-2.12L2 6l2.12-.88z"/><path d="M19 15l.88 2.12L22 18l-2.12.88L19 21l-.88-2.12L16 18l2.12-.88z"/></symbol>
+  <symbol id="ico-heart" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></symbol>
+  <symbol id="ico-users" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="ico-user-check" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></symbol>
+  <symbol id="ico-lock" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="ico-arrow-right" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+  <symbol id="ico-check-circle" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol>
+  <symbol id="ico-alert-circle" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
+  <symbol id="ico-bar-chart" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></symbol>
+  <symbol id="ico-star" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+  <symbol id="ico-trending-up" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></symbol>
+  <symbol id="ico-shield" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+  <symbol id="ico-rotate-ccw" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></symbol>
+  <symbol id="ico-bot" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></symbol>
+  <symbol id="ico-alert-triangle" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+  <symbol id="ico-x-circle" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></symbol>
+</svg>
+
 <!-- INTRO -->
 <div id="intro" class="screen active">
   <div class="intro-hero">
     <div class="intro-logo">
-      <i data-lucide="activity" style="width:20px;height:20px;stroke:#fff;stroke-width:2.5;fill:none"></i>
+      <svg width="20" height="20"><use href="#ico-activity"/></svg>
       LifePulse NG
     </div>
     <div class="intro-title">Know your mental health.<br><span>Know your next step.</span></div>
@@ -174,43 +159,43 @@
   <div class="intro-body">
     <div style="text-align:center;margin-bottom:1rem">
       <span class="age-badge">
-        <i data-lucide="user-check"></i>
+        <svg width="14" height="14"><use href="#ico-user-check"/></svg>
         For adults 18 and above
       </span>
     </div>
     <div class="intro-domains">
       <div class="domain-chip">
-        <div class="chip-icon" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)"><i data-lucide="brain"></i></div>
+        <div class="chip-icon" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)"><svg width="18" height="18"><use href="#ico-brain"/></svg></div>
         <div><div>Mental</div><div class="chip-sub">Emotions &amp; coping</div></div>
       </div>
       <div class="domain-chip">
-        <div class="chip-icon" style="background:linear-gradient(135deg,#f97316,#ef4444)"><i data-lucide="wallet"></i></div>
+        <div class="chip-icon" style="background:linear-gradient(135deg,#f97316,#ef4444)"><svg width="18" height="18"><use href="#ico-wallet"/></svg></div>
         <div><div>Financial</div><div class="chip-sub">Money &amp; stress</div></div>
       </div>
       <div class="domain-chip">
-        <div class="chip-icon" style="background:linear-gradient(135deg,#f59e0b,#f97316)"><i data-lucide="sparkles"></i></div>
+        <div class="chip-icon" style="background:linear-gradient(135deg,#f59e0b,#f97316)"><svg width="18" height="18"><use href="#ico-sparkles"/></svg></div>
         <div><div>Spiritual</div><div class="chip-sub">Purpose &amp; faith</div></div>
       </div>
       <div class="domain-chip">
-        <div class="chip-icon" style="background:linear-gradient(135deg,#ec4899,#f43f5e)"><i data-lucide="heart"></i></div>
+        <div class="chip-icon" style="background:linear-gradient(135deg,#ec4899,#f43f5e)"><svg width="18" height="18"><use href="#ico-heart"/></svg></div>
         <div><div>Relational</div><div class="chip-sub">Love &amp; family</div></div>
       </div>
       <div class="domain-chip">
-        <div class="chip-icon" style="background:linear-gradient(135deg,#3b82f6,#6366f1)"><i data-lucide="users"></i></div>
+        <div class="chip-icon" style="background:linear-gradient(135deg,#3b82f6,#6366f1)"><svg width="18" height="18"><use href="#ico-users"/></svg></div>
         <div><div>Social</div><div class="chip-sub">Community &amp; belonging</div></div>
       </div>
       <div class="domain-chip">
-        <div class="chip-icon" style="background:linear-gradient(135deg,#10b981,#3b82f6)"><i data-lucide="activity"></i></div>
+        <div class="chip-icon" style="background:linear-gradient(135deg,#10b981,#3b82f6)"><svg width="18" height="18"><use href="#ico-activity"/></svg></div>
         <div><div>Physical</div><div class="chip-sub">Body &amp; energy</div></div>
       </div>
     </div>
     <div class="notice">
-      <i data-lucide="lock"></i>
+      <svg width="16" height="16"><use href="#ico-lock"/></svg>
       <div><strong>Important:</strong> This is a wellness reflection tool, not a clinical diagnosis. If you are in crisis, please reach out to a trusted person, counsellor, or mental health helpline. Your answers are completely private and never stored.</div>
     </div>
     <button class="btn-primary" onclick="startAssessment()">
       Start my assessment
-      <i data-lucide="arrow-right"></i>
+      <svg width="18" height="18"><use href="#ico-arrow-right"/></svg>
     </button>
   </div>
   <div class="footer">&copy; 2025 LifePulse NG. All rights reserved.</div>
@@ -219,13 +204,7 @@
 <!-- QUESTION SCREEN -->
 <div id="question-screen" class="screen">
   <div class="topbar">
-    <div class="topbar-logo">
-      <svg class="topbar-logo-icon" viewBox="0 0 24 24" fill="none" stroke="url(#grad1)" stroke-width="2.5">
-        <defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#f97316"/><stop offset="100%" style="stop-color:#7c3aed"/></linearGradient></defs>
-        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-      </svg>
-      LifePulse NG
-    </div>
+    <div class="topbar-logo">LifePulse NG</div>
     <div class="topbar-step" id="topbar-step"></div>
   </div>
   <div class="progress-wrap">
@@ -242,12 +221,12 @@
     <div class="q-hint" id="q-hint"></div>
     <div id="q-options"></div>
     <div class="error-msg" id="error-msg">
-      <i data-lucide="alert-circle"></i>
+      <svg width="14" height="14"><use href="#ico-alert-circle"/></svg>
       Please select an answer to continue.
     </div>
-    <button class="btn-next" id="btn-next" onclick="nextQuestion()">
+    <button class="btn-next" onclick="nextQuestion()">
       Next
-      <i data-lucide="arrow-right"></i>
+      <svg width="18" height="18"><use href="#ico-arrow-right"/></svg>
     </button>
   </div>
 </div>
@@ -260,10 +239,7 @@
   </div>
   <div class="success-container">
     <div class="success-ring" id="success-icon"></div>
-    <div class="success-label">
-      <i data-lucide="check-circle"></i>
-      Section complete
-    </div>
+    <div class="success-label">Section complete</div>
     <div class="success-title" id="success-title"></div>
     <div class="success-sub" id="success-sub"></div>
     <div class="success-dots" id="success-dots"></div>
@@ -282,10 +258,7 @@
 <div id="results-screen" class="screen">
   <div class="topbar">
     <div class="topbar-logo">LifePulse NG</div>
-    <div class="topbar-step" style="display:flex;align-items:center;gap:5px">
-      <i data-lucide="check-circle" style="width:14px;height:14px;stroke:var(--success);stroke-width:2;fill:none"></i>
-      Complete
-    </div>
+    <div class="topbar-step">Complete</div>
   </div>
   <div class="results-hero">
     <h2 id="result-greeting"></h2>
@@ -295,18 +268,15 @@
     <div class="scores-grid" id="scores-grid"></div>
     <div class="ai-card">
       <div class="ai-card-title">
-        <i data-lucide="bot"></i>
+        <svg width="18" height="18"><use href="#ico-bot"/></svg>
         Your Personalised Feedback
       </div>
       <div class="ai-body" id="ai-body">
-        <div class="ai-loading">
-          <div class="dots"><span></span><span></span><span></span></div>
-          Generating your personalised feedback…
-        </div>
+        <div class="ai-loading"><div class="dots"><span></span><span></span><span></span></div> Generating your personalised feedback…</div>
       </div>
     </div>
     <button class="retake-btn" onclick="retake()">
-      <i data-lucide="rotate-ccw"></i>
+      <svg width="16" height="16"><use href="#ico-rotate-ccw"/></svg>
       Retake assessment
     </button>
   </div>
@@ -314,9 +284,17 @@
 </div>
 
 <script>
+const ICON = {
+  mental:     '<svg width="18" height="18"><use href="#ico-brain"/></svg>',
+  financial:  '<svg width="18" height="18"><use href="#ico-wallet"/></svg>',
+  spiritual:  '<svg width="18" height="18"><use href="#ico-sparkles"/></svg>',
+  relational: '<svg width="18" height="18"><use href="#ico-heart"/></svg>',
+  social:     '<svg width="18" height="18"><use href="#ico-users"/></svg>',
+  physical:   '<svg width="18" height="18"><use href="#ico-activity"/></svg>',
+};
+
 const DOMAINS = [
-  {
-    id:"mental", lucide:"brain", color:"linear-gradient(135deg,#6366f1,#8b5cf6)", scoreColor:"#6366f1",
+  { id:"mental", icon:"ico-brain", color:"linear-gradient(135deg,#6366f1,#8b5cf6)", scoreColor:"#6366f1",
     title:"Mental & Emotional Wellbeing", sub:"Emotions, stress & coping",
     successMsg:"You've completed the Mental & Emotional section. That took honesty.",
     questions:[
@@ -326,8 +304,7 @@ const DOMAINS = [
       { id:"m4", type:"select", text:"Have you experienced any of the following for more than 2 weeks?", hint:"Select the most significant one.", selectOptions:["None of these","Persistent sadness or low mood","Extreme worry or panic attacks","Loss of interest in things I used to enjoy","Difficulty sleeping most nights","Feeling disconnected from reality","Thoughts of harming myself"] }
     ]
   },
-  {
-    id:"financial", lucide:"wallet", color:"linear-gradient(135deg,#f97316,#ef4444)", scoreColor:"#f97316",
+  { id:"financial", icon:"ico-wallet", color:"linear-gradient(135deg,#f97316,#ef4444)", scoreColor:"#f97316",
     title:"Financial Wellbeing", sub:"Money, resources & economic confidence",
     successMsg:"Financial stress is real. You've faced those questions honestly.",
     questions:[
@@ -336,8 +313,7 @@ const DOMAINS = [
       { id:"f3", type:"select", text:"Which best describes your current financial situation?", selectOptions:["Comfortable — I save and still have extra","Stable — I meet needs but little savings","Tight — managing month to month","Struggling — often short before month-end","Crisis — I cannot meet basic needs"] }
     ]
   },
-  {
-    id:"spiritual", lucide:"sparkles", color:"linear-gradient(135deg,#f59e0b,#f97316)", scoreColor:"#f59e0b",
+  { id:"spiritual", icon:"ico-sparkles", color:"linear-gradient(135deg,#f59e0b,#f97316)", scoreColor:"#f59e0b",
     title:"Spiritual Wellbeing", sub:"Purpose, faith & inner grounding",
     successMsg:"Your sense of purpose and faith matters deeply. Well done for reflecting on this.",
     questions:[
@@ -346,8 +322,7 @@ const DOMAINS = [
       { id:"sp3", type:"likert", text:"How clearly do you feel you understand your life purpose or calling?", options:["Not at all","Slightly","Somewhat","Mostly","Very clearly"], reverse:false }
     ]
   },
-  {
-    id:"relational", lucide:"heart", color:"linear-gradient(135deg,#ec4899,#f43f5e)", scoreColor:"#ec4899",
+  { id:"relational", icon:"ico-heart", color:"linear-gradient(135deg,#ec4899,#f43f5e)", scoreColor:"#ec4899",
     title:"Relational Wellbeing", sub:"Love, family & close relationships",
     successMsg:"Relationships shape everything. You've been brave answering this section.",
     questions:[
@@ -356,8 +331,7 @@ const DOMAINS = [
       { id:"r3", type:"select", text:"Have you experienced any form of emotional, verbal, or physical abuse in a relationship?", selectOptions:["No, never","Not currently but in the past","Occasionally, yes","Yes, it is ongoing","I am not sure"] }
     ]
   },
-  {
-    id:"social", lucide:"users", color:"linear-gradient(135deg,#3b82f6,#6366f1)", scoreColor:"#3b82f6",
+  { id:"social", icon:"ico-users", color:"linear-gradient(135deg,#3b82f6,#6366f1)", scoreColor:"#3b82f6",
     title:"Social Wellbeing", sub:"Community, belonging & support",
     successMsg:"Your social world matters. Good work reflecting on your connections.",
     questions:[
@@ -366,8 +340,7 @@ const DOMAINS = [
       { id:"s3", type:"likert", text:"How easily can you ask for help from people around you when you need it?", options:["Very hard","Hard","Somewhat easy","Easy","Very easy"], reverse:false }
     ]
   },
-  {
-    id:"physical", lucide:"activity", color:"linear-gradient(135deg,#10b981,#3b82f6)", scoreColor:"#10b981",
+  { id:"physical", icon:"ico-activity", color:"linear-gradient(135deg,#10b981,#3b82f6)", scoreColor:"#10b981",
     title:"Physical Wellbeing", sub:"Body, health habits & energy",
     successMsg:"Your body is your foundation. That is the last section — you are done!",
     questions:[
@@ -379,22 +352,18 @@ const DOMAINS = [
 ];
 
 const ALL_QUESTIONS = [];
-DOMAINS.forEach(d => d.questions.forEach(q => ALL_QUESTIONS.push({ ...q, domainId: d.id, domainTitle: d.title, domainLucide: d.lucide })));
+DOMAINS.forEach(d => d.questions.forEach(q => ALL_QUESTIONS.push({ ...q, domainId: d.id })));
 const TOTAL = ALL_QUESTIONS.length;
+let currentQ = 0, answers = {}, currentAnswer = null;
 
-let currentQ = 0;
-let answers = {};
-let currentAnswer = null;
-
-function icon(name, size=16, color='currentColor') {
-  return `<i data-lucide="${name}" style="width:${size}px;height:${size}px;stroke:${color};stroke-width:2;fill:none;display:inline-block;vertical-align:middle"></i>`;
+function svg(id, size=18, stroke='currentColor') {
+  return `<svg width="${size}" height="${size}" style="stroke:${stroke};fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle"><use href="#${id}"/></svg>`;
 }
 
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0, 0);
-  lucide.createIcons();
 }
 
 function startAssessment() {
@@ -406,20 +375,16 @@ function startAssessment() {
 function renderQuestion() {
   const q = ALL_QUESTIONS[currentQ];
   const domain = DOMAINS.find(d => d.id === q.domainId);
-  const qInDomain = DOMAINS.slice(0, DOMAINS.indexOf(domain)).reduce((s, d) => s + d.questions.length, 0);
-  const qNumInDomain = currentQ - qInDomain + 1;
-
+  const qStart = DOMAINS.slice(0, DOMAINS.indexOf(domain)).reduce((s, d) => s + d.questions.length, 0);
   currentAnswer = answers[q.id]?.value ?? null;
 
   document.getElementById('topbar-step').textContent = domain.title;
-
   const pct = Math.round((currentQ / TOTAL) * 100);
   document.getElementById('progress-fill').style.width = pct + '%';
   document.getElementById('progress-label').textContent = `Question ${currentQ + 1} of ${TOTAL}`;
   document.getElementById('progress-pct').textContent = pct + '%';
-
-  document.getElementById('cat-label').innerHTML = `<i data-lucide="${domain.lucide}" style="width:14px;height:14px;stroke:var(--purple);stroke-width:2;fill:none"></i> ${domain.title}`;
-  document.getElementById('q-number').textContent = `Question ${qNumInDomain} of ${domain.questions.length} in this section`;
+  document.getElementById('cat-label').innerHTML = svg(domain.icon, 14, 'var(--purple)') + ' ' + domain.title;
+  document.getElementById('q-number').textContent = `Question ${currentQ - qStart + 1} of ${domain.questions.length} in this section`;
   document.getElementById('q-text').textContent = q.text;
   document.getElementById('q-hint').textContent = q.hint || '';
   document.getElementById('error-msg').classList.remove('show');
@@ -450,8 +415,6 @@ function renderQuestion() {
     sel.onchange = () => { currentAnswer = parseInt(sel.value); document.getElementById('error-msg').classList.remove('show'); };
     container.appendChild(sel);
   }
-
-  lucide.createIcons();
 }
 
 function nextQuestion() {
@@ -459,10 +422,8 @@ function nextQuestion() {
     document.getElementById('error-msg').classList.add('show');
     return;
   }
-
   const q = ALL_QUESTIONS[currentQ];
   const domain = DOMAINS.find(d => d.id === q.domainId);
-
   answers[q.id] = { value: currentAnswer, text: q.text, domainId: q.domainId };
   if (q.type === 'likert') {
     answers[q.id].label = q.options[currentAnswer];
@@ -473,25 +434,19 @@ function nextQuestion() {
     answers[q.id].isSelect = true;
     answers[q.id].optCount = q.selectOptions.length;
   }
-
   const isLastInDomain = currentQ + 1 >= TOTAL || ALL_QUESTIONS[currentQ + 1].domainId !== q.domainId;
-  currentQ++;
-  currentAnswer = null;
-
+  currentQ++; currentAnswer = null;
   if (isLastInDomain) showCategorySuccess(domain);
   else { showScreen('question-screen'); renderQuestion(); }
 }
 
 function showCategorySuccess(domain) {
-  const domainIndex = DOMAINS.indexOf(domain);
-  const isLast = domainIndex === DOMAINS.length - 1;
-  const nextDomain = isLast ? null : DOMAINS[domainIndex + 1];
+  const di = DOMAINS.indexOf(domain);
+  const isLast = di === DOMAINS.length - 1;
+  const nextDomain = isLast ? null : DOMAINS[di + 1];
 
-  document.getElementById('success-step-label').textContent = `${domainIndex + 1} of ${DOMAINS.length} sections`;
-
-  const ring = document.getElementById('success-icon');
-  ring.innerHTML = `<i data-lucide="${domain.lucide}" style="width:40px;height:40px;stroke:#fff;stroke-width:2;fill:none"></i>`;
-
+  document.getElementById('success-step-label').textContent = `${di + 1} of ${DOMAINS.length} sections`;
+  document.getElementById('success-icon').innerHTML = svg(domain.icon, 40, '#fff');
   document.getElementById('success-title').textContent = domain.title + ' — Done';
   document.getElementById('success-sub').textContent = domain.successMsg;
 
@@ -499,14 +454,14 @@ function showCategorySuccess(domain) {
   dots.innerHTML = '';
   DOMAINS.forEach((d, i) => {
     const dot = document.createElement('div');
-    dot.className = 'success-dot' + (i < domainIndex + 1 ? ' done' : i === domainIndex + 1 ? ' current' : '');
+    dot.className = 'success-dot' + (i <= di ? ' done' : i === di + 1 ? ' current' : '');
     dots.appendChild(dot);
   });
 
   const preview = document.getElementById('next-preview');
   if (nextDomain) {
     preview.style.display = 'flex';
-    document.getElementById('next-icon').innerHTML = `<i data-lucide="${nextDomain.lucide}" style="width:18px;height:18px;stroke:#fff;stroke-width:2;fill:none"></i>`;
+    document.getElementById('next-icon').innerHTML = svg(nextDomain.icon, 18, '#fff');
     document.getElementById('next-icon').style.background = nextDomain.color;
     document.getElementById('next-title').textContent = nextDomain.title;
   } else {
@@ -515,8 +470,8 @@ function showCategorySuccess(domain) {
 
   const btn = document.getElementById('success-btn');
   btn.innerHTML = isLast
-    ? 'See my results <i data-lucide="bar-chart-2" style="width:18px;height:18px;stroke:#fff;stroke-width:2.5;fill:none"></i>'
-    : 'Continue to next section <i data-lucide="arrow-right" style="width:18px;height:18px;stroke:#fff;stroke-width:2.5;fill:none"></i>';
+    ? `See my results ${svg('ico-bar-chart', 18, '#fff')}`
+    : `Continue to next section ${svg('ico-arrow-right', 18, '#fff')}`;
 
   showScreen('category-success');
 }
@@ -533,9 +488,9 @@ function scoreDomain(domainId) {
     const a = answers[q.id];
     if (!a) return;
     const max = a.optCount - 1;
-    let raw;
-    if (a.isSelect) raw = q.id === 'r3' ? Math.max(0, 1 - a.value / max) : (max - a.value) / max;
-    else raw = a.reverse ? (max - a.value) / max : a.value / max;
+    let raw = a.isSelect
+      ? (q.id === 'r3' ? Math.max(0, 1 - a.value / max) : (max - a.value) / max)
+      : (a.reverse ? (max - a.value) / max : a.value / max);
     total += raw * 4; count++;
   });
   return count ? Math.round((total / count) * 25) : 50;
@@ -557,7 +512,6 @@ function buildPrompt(scores) {
 3. AREAS NEEDING ATTENTION (name the 2-3 weakest areas honestly but kindly)
 4. PRACTICAL NEXT STEPS (for each weak area: 2-3 specific, actionable, Nigeria-appropriate steps — mention free or low-cost resources, community support, faith-based options where relevant)
 5. CLOSING WORD (one warm, grounding sentence to send them off)
-
 Write in second person (you/your). Language: warm and accessible — not clinical, not preachy. Total length: 400-500 words.`;
   return p;
 }
@@ -566,7 +520,7 @@ async function showResults() {
   const scores = {};
   DOMAINS.forEach(d => { scores[d.id] = scoreDomain(d.id); });
 
-  // Save anonymous scores to Supabase (silent — never blocks the user)
+  // Save anonymous scores to Supabase silently
   const overall = Math.round(DOMAINS.reduce((s, d) => s + scores[d.id], 0) / DOMAINS.length);
   fetch('/api/save', {
     method: 'POST',
@@ -576,32 +530,23 @@ async function showResults() {
 
   showScreen('results-screen');
 
-  const overall = Math.round(DOMAINS.reduce((s, d) => s + scores[d.id], 0) / DOMAINS.length);
-  const greetingIcon = overall >= 75 ? 'star' : overall >= 50 ? 'trending-up' : 'shield';
+  const greetingIcon = overall >= 75 ? 'ico-star' : overall >= 50 ? 'ico-trending-up' : 'ico-shield';
   const greetingText = overall >= 75 ? "You're living with real strength" : overall >= 50 ? "You're holding on — let's grow from here" : "You showed up honestly — that's already courage";
-  document.getElementById('result-greeting').innerHTML = `<i data-lucide="${greetingIcon}" style="width:24px;height:24px;stroke:#fff;stroke-width:2;fill:none"></i> ${greetingText}`;
+  document.getElementById('result-greeting').innerHTML = `${svg(greetingIcon, 24, '#fff')} ${greetingText}`;
 
   const grid = document.getElementById('scores-grid');
   grid.innerHTML = '';
   DOMAINS.forEach(d => {
     const sc = scores[d.id], col = getScoreColor(sc);
-    const statusIcon = sc >= 75 ? 'check-circle' : sc >= 50 ? 'alert-triangle' : 'x-circle';
+    const statusIcon = sc >= 75 ? 'ico-check-circle' : sc >= 50 ? 'ico-alert-triangle' : 'ico-x-circle';
     const card = document.createElement('div');
     card.className = 'score-card';
     card.innerHTML = `
-      <div class="score-card-label">
-        <i data-lucide="${d.lucide}" style="stroke:${d.scoreColor}"></i>
-        ${d.title.split(' ')[0]}
-      </div>
-      <div class="score-card-num" style="color:${col}">
-        ${sc}<span style="font-size:0.78rem;font-weight:400;color:var(--text-muted)">/100</span>
-        <i data-lucide="${statusIcon}" style="width:14px;height:14px;stroke:${col};stroke-width:2;fill:none;margin-left:4px"></i>
-      </div>
+      <div class="score-card-label">${svg(d.icon, 13, d.scoreColor)} ${d.title.split(' ')[0]}</div>
+      <div class="score-card-num" style="color:${col}">${sc}<span style="font-size:0.78rem;font-weight:400;color:var(--text-muted)">/100</span> ${svg(statusIcon, 13, col)}</div>
       <div class="score-track"><div class="score-fill" style="width:${sc}%;background:${col}"></div></div>`;
     grid.appendChild(card);
   });
-
-  lucide.createIcons();
 
   const aiBody = document.getElementById('ai-body');
   try {
@@ -641,9 +586,6 @@ function retake() {
   answers = {}; currentQ = 0; currentAnswer = null;
   showScreen('intro');
 }
-
-// Init icons on page load
-document.addEventListener('DOMContentLoaded', () => lucide.createIcons());
 </script>
 </body>
 </html>

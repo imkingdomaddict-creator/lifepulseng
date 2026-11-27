@@ -43,7 +43,7 @@ export default async function handler(req) {
       'Authorization': `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      model: 'llama-3.3-70b-versatile',
+      model: 'llama3-70b-8192',
       max_tokens: 1200,
       stream: true,
       messages: body.messages,

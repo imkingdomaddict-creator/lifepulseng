@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LifePulse NG — Admin Dashboard</title>
-<script src="https://unpkg.com/lucide@latest"></script>
 <style>
   :root {
     --orange: #f97316; --purple: #7c3aed;
@@ -101,11 +100,11 @@
     <div class="topbar-logo">LifePulse NG — Admin</div>
     <div class="topbar-right">
       <button class="export-btn" onclick="exportCSV()">
-        <i data-lucide="download" style="width:14px;height:14px;stroke:var(--purple);stroke-width:2;fill:none"></i>
+        ↓
         Export CSV
       </button>
       <button class="logout-btn" onclick="logout()">
-        <i data-lucide="log-out" style="width:14px;height:14px;stroke:var(--text-muted);stroke-width:2;fill:none"></i>
+        →
         Logout
       </button>
     </div>
@@ -169,7 +168,7 @@ async function loadStats() {
     document.getElementById('dashboard').style.display = 'block';
     document.getElementById('last-updated').textContent = 'Last refreshed: ' + new Date().toLocaleString('en-NG');
     renderDashboard(statsData);
-    lucide.createIcons();
+    
   } catch (err) {
     document.getElementById('login-error').textContent = 'Could not connect. Check your setup.';
     document.getElementById('login-error').classList.add('show');
@@ -193,29 +192,29 @@ function renderDashboard(data) {
     <!-- STAT CARDS -->
     <div class="stat-grid">
       <div class="stat-card">
-        <div class="stat-label"><i data-lucide="users"></i> Total Assessments</div>
+        <div class="stat-label">👥 Total Assessments</div>
         <div class="stat-value">${total.toLocaleString()}</div>
         <div class="stat-sub">All time</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label"><i data-lucide="bar-chart-2"></i> Overall Average</div>
+        <div class="stat-label">📊 Overall Average</div>
         <div class="stat-value">${overallAvg}</div>
         <div class="stat-sub">Out of 100</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label"><i data-lucide="trending-down"></i> Weakest Area</div>
+        <div class="stat-label">↓ Weakest Area</div>
         <div class="stat-value" style="font-size:1.3rem">${DOMAIN_META[weakest]?.label || '—'}</div>
         <div class="stat-sub">${averages[weakest] || 0}/100 avg</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label"><i data-lucide="trending-up"></i> Strongest Area</div>
+        <div class="stat-label">↑ Strongest Area</div>
         <div class="stat-value" style="font-size:1.3rem">${DOMAIN_META[strongest]?.label || '—'}</div>
         <div class="stat-sub">${averages[strongest] || 0}/100 avg</div>
       </div>
     </div>
 
     <!-- DOMAIN AVERAGES -->
-    <div class="section-title"><i data-lucide="activity"></i> Average Scores by Domain</div>
+    <div class="section-title"> Average Scores by Domain</div>
     ${total === 0 ? `<div class="empty">No assessments completed yet. Share LifePulse NG to get started.</div>` : `
     <div class="domain-grid">
       ${Object.entries(DOMAIN_META).map(([id, meta]) => {
@@ -224,7 +223,7 @@ function renderDashboard(data) {
         return `
         <div class="domain-row">
           <div class="domain-row-top">
-            <div class="domain-name"><i data-lucide="${meta.lucide}" style="stroke:${col}"></i> ${meta.label}</div>
+            <div class="domain-name"> ${meta.label}</div>
             <div class="domain-score" style="color:${col}">${sc}/100</div>
           </div>
           <div class="bar-track"><div class="bar-fill" style="width:${sc}%;background:${col}"></div></div>
@@ -234,7 +233,7 @@ function renderDashboard(data) {
     </div>`}
 
     <!-- MONTHLY BREAKDOWN -->
-    <div class="section-title"><i data-lucide="calendar"></i> Monthly Breakdown</div>
+    <div class="section-title"> Monthly Breakdown</div>
     <div class="monthly-card">
       ${monthEntries.length === 0 ? `<div class="empty">No monthly data yet.</div>` : `
       <table>
@@ -251,7 +250,7 @@ function renderDashboard(data) {
     </div>
   `;
 
-  lucide.createIcons();
+  
 }
 
 function formatMonth(key) {
@@ -285,7 +284,7 @@ function exportCSV() {
   a.click(); URL.revokeObjectURL(url);
 }
 
-document.addEventListener('DOMContentLoaded', () => lucide.createIcons());
+document.addEventListener('DOMContentLoaded', () => {});
 </script>
 </body>
 </html>

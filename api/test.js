@@ -19,7 +19,7 @@ export default async function handler(req) {
         'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
+        model: 'llama-3.1-8b-instant',
         max_tokens: 50,
         stream: false,
         messages: [{ role: 'user', content: 'Say hello in 5 words.' }],

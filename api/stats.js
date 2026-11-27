@@ -3,25 +3,44 @@ export const config = { runtime: 'edge' };
 export default async function handler(req) {
   const cors = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   };
 
   if (req.method === 'OPTIONS') return new Response(null, { headers: cors });
 
-  // Get password from request body instead of header
+  // Read body if POST
   let body = {};
-  if (req.method === 'POST') {
-    try { body = await req.json(); } catch {}
+  try {
+    const text = await req.text();
+    if (text) body = JSON.parse(text);
+  } catch {}
+
+  // Get password from body OR header OR query param
+  const authHeader = (req.headers.get('Authorization') || '').replace('Bearer ', '').trim();
+  const bodyPassword = (body.password || '').trim();
+  const url = new URL(req.url);
+  const queryPassword = (url.searchParams.get('p') || '').trim();
+
+  const submitted = bodyPassword || authHeader || queryPassword;
+  const stored = (process.env.ADMIN_PASSWORD || '').trim();
+
+  // Debug: return what we received (REMOVE AFTER FIXING)
+  if (submitted === 'debug') {
+    return new Response(JSON.stringify({
+      debug: true,
+      submitted,
+      storedLength: stored.length,
+      storedFirst3: stored.slice(0, 3),
+      match: submitted === stored
+    }), { headers: { 'Content-Type': 'application/json', ...cors } });
   }
 
-  const submittedPassword = body.password || '';
-  const adminPassword = (process.env.ADMIN_PASSWORD || '').trim();
-
-  if (!adminPassword || submittedPassword.trim() !== adminPassword) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401, headers: { 'Content-Type': 'application/json', ...cors }
-    });
+  if (!stored || submitted !== stored) {
+    return new Response(JSON.stringify({
+      error: 'Unauthorized',
+      hint: 'submitted=' + submitted + ' storedLength=' + stored.length
+    }), { status: 401, headers: { 'Content-Type': 'application/json', ...cors } });
   }
 
   const supabaseUrl = process.env.SUPABASE_URL;
@@ -61,9 +80,7 @@ export default async function handler(req) {
     averages[d] = valid.length ? Math.round(valid.reduce((a, b) => a + b, 0) / valid.length) : 0;
   });
 
-  const overallAvg = domains.length
-    ? Math.round(domains.reduce((s, d) => s + averages[d], 0) / domains.length)
-    : 0;
+  const overallAvg = Math.round(domains.reduce((s, d) => s + averages[d], 0) / domains.length);
 
   const monthly = {};
   rows.forEach(r => {
@@ -72,10 +89,6 @@ export default async function handler(req) {
     monthly[key] = (monthly[key] || 0) + 1;
   });
 
-  return new Response(JSON.stringify({
-    total,
-    averages,
-    overallAvg,
-    monthly,
-  }), { headers: { 'Content-Type': 'application/json', ...cors } });
+  return new Response(JSON.stringify({ total, averages, overallAvg, monthly }),
+    { headers: { 'Content-Type': 'application/json', ...cors } });
 }

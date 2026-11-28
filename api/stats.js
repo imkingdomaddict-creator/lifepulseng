@@ -25,26 +25,15 @@ export default async function handler(req) {
   const submitted = bodyPassword || authHeader || queryPassword;
   const stored = (process.env.ADMIN_PASSWORD || '').trim();
 
-  // Debug: return what we received (REMOVE AFTER FIXING)
-  if (submitted === 'debug') {
-    return new Response(JSON.stringify({
-      debug: true,
-      submitted,
-      storedLength: stored.length,
-      storedFirst3: stored.slice(0, 3),
-      match: submitted === stored
-    }), { headers: { 'Content-Type': 'application/json', ...cors } });
-  }
-
   if (!stored || submitted !== stored) {
     return new Response(JSON.stringify({
-      error: 'Unauthorized',
-      hint: 'submitted=' + submitted + ' storedLength=' + stored.length
+      error: 'Unauthorized'
     }), { status: 401, headers: { 'Content-Type': 'application/json', ...cors } });
   }
 
   const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_ANON_KEY;
+  // FIXED: Use Service Role first, so admin can see ALL rows (bypasses RLS)
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
     return new Response(JSON.stringify({ error: 'Supabase not configured' }), {
@@ -76,7 +65,7 @@ export default async function handler(req) {
 
   const averages = {};
   domains.forEach(d => {
-    const valid = rows.filter(r => r[d] !== null).map(r => r[d]);
+    const valid = rows.filter(r => r[d] !== null && r[d] !== undefined).map(r => Number(r[d]));
     averages[d] = valid.length ? Math.round(valid.reduce((a, b) => a + b, 0) / valid.length) : 0;
   });
 
@@ -84,6 +73,7 @@ export default async function handler(req) {
 
   const monthly = {};
   rows.forEach(r => {
+    if (!r.created_at) return;
     const d = new Date(r.created_at);
     const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
     monthly[key] = (monthly[key] || 0) + 1;

@@ -555,6 +555,21 @@ async function showResults() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ messages: [{ role: 'user', content: buildPrompt(scores) }] })
     });
+    // Check for rate limit
+    if (res.status === 429) {
+      const now = new Date();
+      const resetHour = new Date(now);
+      resetHour.setHours(now.getHours() + 5, 0, 0, 0);
+      const timeStr = resetHour.toLocaleTimeString('en-NG', { hour: '2-digit', minute: '2-digit' });
+      aiBody.innerHTML = `<div style="background:#fff4ed;border:1px solid #fed7aa;border-radius:10px;padding:16px;font-size:0.88rem;line-height:1.7;color:#7c2d12">
+        <strong style="font-size:1rem;color:#ea6c0a">Daily limit reached</strong><br><br>
+        LifePulse NG uses a free AI service that has a daily usage limit. It resets every few hours.<br><br>
+        <strong>Please come back around ${timeStr} to get your personalised feedback.</strong><br><br>
+        Your scores above are still accurate — save them for reference. The feedback will be waiting when you return.
+      </div>`;
+      return;
+    }
+
     if (!res.ok) throw new Error('API error ' + res.status);
     aiBody.textContent = '';
     const reader = res.body.getReader();
@@ -578,7 +593,7 @@ async function showResults() {
       }
     }
   } catch (err) {
-    aiBody.innerHTML = `<div style="color:var(--danger);font-size:0.85rem"><strong>Feedback could not load.</strong><br>${err.message}<br><br>Make sure GROQ_API_KEY is set in your Vercel environment variables, then redeploy.</div>`;
+    aiBody.innerHTML = `<div style="color:var(--danger);font-size:0.85rem"><strong>Feedback could not load.</strong><br>${err.message}<br><br>Please check your internet connection and try again.</div>`;
   }
 }
 

@@ -19,7 +19,7 @@ export default async function handler(req) {
         'X-Title': 'LifePulse NG',
       },
       body: JSON.stringify({
-        model: 'baidu/ernie-5.5-flash-preview:free',
+        model: 'deepseek/deepseek-r1-0528:free',
         max_tokens: 50,
         stream: false,
         messages: [{ role: 'user', content: 'Say hello in 5 words.' }],

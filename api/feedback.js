@@ -37,7 +37,7 @@ export default async function handler(req) {
       'X-Title': 'LifePulse NG',
     },
     body: JSON.stringify({
-      model: 'meta-llama/llama-3.2-3b-instruct:free',
+      model: 'baidu/ernie-5.5-flash-preview:free',
       max_tokens: 1200,
       stream: true,
       messages: body.messages,

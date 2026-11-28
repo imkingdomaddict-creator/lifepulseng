@@ -38,7 +38,7 @@ export default async function handler(req) {
     },
     body: JSON.stringify({
       model: 'nvidia/nemotron-3-ultra-550b-a55b:free',
-      max_tokens: 1200,
+      max_tokens: 4000,
       stream: true,
       messages: body.messages,
     }),
@@ -46,7 +46,6 @@ export default async function handler(req) {
 
   if (!upstream.ok) {
     const err = await upstream.text();
-    // Check if rate limit exceeded
     if (upstream.status === 429) {
       return new Response(JSON.stringify({ error: 'rate_limit' }), {
         status: 429, headers: { 'Content-Type': 'application/json', ...cors }

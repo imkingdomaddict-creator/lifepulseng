@@ -119,6 +119,29 @@
   .retake-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: none; border: 2px solid var(--orange); color: var(--orange); padding: 14px; border-radius: 999px; font-size: 0.95rem; font-weight: 700; cursor: pointer; }
   .retake-btn svg { width: 16px; height: 16px; stroke: var(--orange); stroke-width: 2.5; fill: none; }
   .footer { text-align: center; padding: 1.5rem; font-size: 0.75rem; color: var(--text-muted); border-top: 1px solid var(--border); margin-top: auto; }
+
+  /* DAILY COUNTER */
+  .counter-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 1.5rem; }
+  .counter-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .counter-label { font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+  .counter-label svg { width: 13px; height: 13px; stroke: var(--orange); stroke-width: 2; fill: none; }
+  .counter-num { font-size: 0.85rem; font-weight: 700; }
+  .counter-track { height: 8px; background: var(--border); border-radius: 999px; overflow: hidden; }
+  .counter-fill { height: 100%; border-radius: 999px; background: var(--grad); transition: width 0.6s ease; }
+  .counter-status { font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; text-align: right; }
+
+  /* BLOCKED SCREEN */
+  .blocked-box { background: #fff4ed; border: 1px solid #fed7aa; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 1.5rem; }
+  .blocked-box svg { width: 36px; height: 36px; stroke: var(--orange); stroke-width: 1.5; fill: none; margin-bottom: 10px; }
+  .blocked-title { font-size: 1rem; font-weight: 700; color: var(--orange-dark); margin-bottom: 6px; }
+  .blocked-sub { font-size: 0.85rem; color: #7c4a00; line-height: 1.6; }
+  @media (prefers-color-scheme: dark) {
+    .blocked-box { background: #2a1200; border-color: #7c3a00; }
+    .blocked-sub { color: #fbbf7a; }
+  }
+
+  /* AI BODY — scrollable, any length */
+  .ai-body { font-size: 0.92rem; line-height: 1.8; white-space: pre-wrap; color: var(--text); word-break: break-word; overflow-wrap: break-word; }
 </style>
 </head>
 <body>
@@ -189,11 +212,31 @@
         <div><div>Physical</div><div class="chip-sub">Body &amp; energy</div></div>
       </div>
     </div>
+    <!-- DAILY COUNTER -->
+    <div class="counter-wrap" id="counter-wrap" style="display:none">
+      <div class="counter-top">
+        <div class="counter-label">
+          <svg width="13" height="13"><use href="#ico-users"/></svg>
+          Today's assessments
+        </div>
+        <div class="counter-num" id="counter-num">— / 50</div>
+      </div>
+      <div class="counter-track"><div class="counter-fill" id="counter-fill" style="width:0%"></div></div>
+      <div class="counter-status" id="counter-status">Loading…</div>
+    </div>
+
+    <!-- BLOCKED MESSAGE -->
+    <div class="blocked-box" id="blocked-box" style="display:none">
+      <svg width="36" height="36"><use href="#ico-alert-circle"/></svg>
+      <div class="blocked-title">Today's limit reached</div>
+      <div class="blocked-sub" id="blocked-msg">All 50 assessments for today have been used. LifePulse NG uses a free AI service with a daily limit. Come back tomorrow after 1:00 AM to take your assessment.</div>
+    </div>
+
     <div class="notice">
       <svg width="16" height="16"><use href="#ico-lock"/></svg>
       <div><strong>Important:</strong> This is a wellness reflection tool, not a clinical diagnosis. If you are in crisis, please reach out to a trusted person, counsellor, or mental health helpline. Your answers are completely private and never stored.</div>
     </div>
-    <button class="btn-primary" onclick="startAssessment()">
+    <button class="btn-primary" id="start-btn" onclick="startAssessment()">
       Start my assessment
       <svg width="18" height="18"><use href="#ico-arrow-right"/></svg>
     </button>
@@ -351,6 +394,36 @@ const DOMAINS = [
   }
 ];
 
+// Load daily limit on homepage
+async function loadLimit() {
+  try {
+    const res = await fetch('/api/limit');
+    if (!res.ok) return;
+    const data = await res.json();
+    const { count, limit, blocked } = data;
+    const pct = Math.min(Math.round((count / limit) * 100), 100);
+
+    document.getElementById('counter-wrap').style.display = 'block';
+    document.getElementById('counter-num').textContent = `${count} / ${limit}`;
+    document.getElementById('counter-fill').style.width = pct + '%';
+
+    const remaining = limit - count;
+    if (blocked) {
+      document.getElementById('counter-status').textContent = 'Limit reached for today';
+      document.getElementById('counter-fill').style.background = '#dc2626';
+      document.getElementById('blocked-box').style.display = 'block';
+      document.getElementById('start-btn').disabled = true;
+      document.getElementById('start-btn').style.background = '#ccc';
+      document.getElementById('start-btn').style.cursor = 'not-allowed';
+    } else if (remaining <= 10) {
+      document.getElementById('counter-status').textContent = `Only ${remaining} spot${remaining === 1 ? '' : 's'} left today — resets at 1:00 AM`;
+      document.getElementById('counter-fill').style.background = '#f97316';
+    } else {
+      document.getElementById('counter-status').textContent = `${remaining} spots remaining today — resets at 1:00 AM`;
+    }
+  } catch {}
+}
+
 const ALL_QUESTIONS = [];
 DOMAINS.forEach(d => d.questions.forEach(q => ALL_QUESTIONS.push({ ...q, domainId: d.id })));
 const TOTAL = ALL_QUESTIONS.length;
@@ -366,7 +439,19 @@ function showScreen(id) {
   window.scrollTo(0, 0);
 }
 
-function startAssessment() {
+async function startAssessment() {
+  // Double-check limit before starting
+  try {
+    const res = await fetch('/api/limit');
+    if (res.ok) {
+      const data = await res.json();
+      if (data.blocked) {
+        document.getElementById('blocked-box').style.display = 'block';
+        document.getElementById('start-btn').disabled = true;
+        return;
+      }
+    }
+  } catch {}
   currentQ = 0; answers = {};
   showScreen('question-screen');
   renderQuestion();
@@ -612,7 +697,11 @@ async function showResults() {
 function retake() {
   answers = {}; currentQ = 0; currentAnswer = null;
   showScreen('intro');
+  loadLimit();
 }
+
+// Load limit on page start
+loadLimit();
 </script>
 </body>
 </html>

@@ -1,39 +1,67 @@
 export const config = { runtime: 'edge' };
 
 export default async function handler(req) {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const cors = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  };
 
+  if (req.method === 'OPTIONS') return new Response(null, { headers: cors });
+  if (req.method !== 'POST') {
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+      status: 405, headers: { 'Content-Type': 'application/json', ...cors }
+    });
+  }
+
+  const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
-    return new Response(JSON.stringify({
-      status: 'NO GEMINI API KEY FOUND'
-    }), { headers: { 'Content-Type': 'application/json' } });
+    return new Response(JSON.stringify({ error: 'API key not configured' }), {
+      status: 500, headers: { 'Content-Type': 'application/json', ...cors }
+    });
   }
 
-  try {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:streamGenerateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ role: 'user', parts: [{ text: 'Say hello in 5 words.' }] }],
-          generationConfig: { maxOutputTokens: 50 }
-        }),
-      }
-    );
-
-    const data = await res.json();
-    return new Response(JSON.stringify({
-      status: res.ok ? 'GEMINI WORKING' : 'GEMINI ERROR',
-      httpStatus: res.status,
-      keyFirst4: apiKey.slice(0, 4),
-      response: data
-    }), { headers: { 'Content-Type': 'application/json' } });
-
-  } catch (err) {
-    return new Response(JSON.stringify({
-      status: 'FETCH ERROR',
-      error: err.message
-    }), { headers: { 'Content-Type': 'application/json' } });
+  let body;
+  try { body = await req.json(); } catch {
+    return new Response(JSON.stringify({ error: 'Invalid JSON' }), {
+      status: 400, headers: { 'Content-Type': 'application/json', ...cors }
+    });
   }
+
+  const upstream = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+      'HTTP-Referer': 'https://lifepulseng.vercel.app',
+      'X-Title': 'LifePulse NG',
+    },
+    body: JSON.stringify({
+      model: 'mistralai/mistral-7b-instruct:free',
+      max_tokens: 1200,
+      stream: true,
+      messages: body.messages,
+    }),
+  });
+
+  if (!upstream.ok) {
+    const err = await upstream.text();
+    // Check if rate limit exceeded
+    if (upstream.status === 429) {
+      return new Response(JSON.stringify({ error: 'rate_limit' }), {
+        status: 429, headers: { 'Content-Type': 'application/json', ...cors }
+      });
+    }
+    return new Response(JSON.stringify({ error: 'Upstream error', detail: err }), {
+      status: upstream.status, headers: { 'Content-Type': 'application/json', ...cors }
+    });
+  }
+
+  return new Response(upstream.body, {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Access-Control-Allow-Origin': '*',
+    },
+  });
 }

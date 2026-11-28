@@ -506,13 +506,24 @@ function buildPrompt(scores) {
     p += `\n[${domain.title}]\n`;
     domain.questions.forEach(q => { const a = answers[q.id]; if (a) p += `Q: ${a.text}\nA: ${a.label}\n`; });
   });
-  p += `\nWrite a personalised wellness report with these clearly labelled sections:
-1. OVERALL PICTURE (2-3 sentences on this person's overall wellness right now)
-2. STRENGTHS (what they are genuinely doing well — celebrate it warmly)
-3. AREAS NEEDING ATTENTION (name the 2-3 weakest areas honestly but kindly)
-4. PRACTICAL NEXT STEPS (for each weak area: 2-3 specific, actionable, Nigeria-appropriate steps — mention free or low-cost resources, community support, faith-based options where relevant)
-5. CLOSING WORD (one warm, grounding sentence to send them off)
-Write in second person (you/your). Language: warm and accessible — not clinical, not preachy. Total length: 400-500 words.`;
+  p += `\nWrite a SHORT personalised wellness report. Use these exact section headers:
+
+OVERALL PICTURE
+2 sentences only on their overall wellness.
+
+STRENGTHS
+2-3 bullet points on what they are doing well.
+
+NEEDS ATTENTION
+The 2 weakest areas, one sentence each, honest but kind.
+
+NEXT STEPS
+For each weak area, give exactly 2 practical Nigeria-appropriate actions. Keep each action to one short sentence.
+
+CLOSING WORD
+One warm sentence only.
+
+Rules: second person (you/your), warm not clinical, NO preamble, NO reasoning, go straight to OVERALL PICTURE. Maximum 300 words total.`;
   return p;
 }
 
@@ -587,8 +598,8 @@ async function showResults() {
         if (data === '[DONE]') continue;
         try {
           const parsed = JSON.parse(data);
-          const delta = parsed.choices?.[0]?.delta?.content
-                     || parsed.choices?.[0]?.delta?.reasoning;
+          // Only show content, never reasoning/thinking text
+          const delta = parsed.choices?.[0]?.delta?.content;
           if (delta) aiBody.textContent += delta;
         } catch {}
       }

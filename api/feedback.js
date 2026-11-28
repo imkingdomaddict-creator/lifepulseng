@@ -37,7 +37,7 @@ export default async function handler(req) {
       'X-Title': 'LifePulse NG',
     },
     body: JSON.stringify({
-      model: 'deepseek/deepseek-r1-0528:free',
+      model: 'nvidia/nemotron-3-ultra-550b-a55b:free',
       max_tokens: 1200,
       stream: true,
       messages: body.messages,
